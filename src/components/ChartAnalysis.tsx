@@ -16,14 +16,14 @@ export function ChartAnalysis({ onNewSignal }: ChartAnalysisProps) {
     const assets = ['BTC/USDT', 'ETH/USDT', 'SOL/USDT', 'BNB/USDT'];
     const timeframes = ['15m', '1h', '4h', '1d'];
     const patterns = [
-      'Bullish Engulfing',
-      'Double Bottom',
-      'Head and Shoulders',
-      'Ascending Triangle',
-      'Cup and Handle',
-      'Bull Flag',
-      'Golden Cross',
-      'RSI Divergence'
+      'Engolfo de Alta',
+      'Fundo Duplo',
+      'Ombro-Cabeça-Ombro',
+      'Triângulo Ascendente',
+      'Xícara com Alça',
+      'Bandeira de Alta',
+      'Cruzamento Dourado',
+      'Divergência RSI'
     ];
 
     const asset = assets[Math.floor(Math.random() * assets.length)];
@@ -42,19 +42,19 @@ export function ChartAnalysis({ onNewSignal }: ChartAnalysisProps) {
     const riskRewardRatio = Math.abs((tp1 - entryPrice) / (stopLoss - entryPrice));
     const selectedPatterns = patterns.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * 3) + 1);
 
-    const reasoning = `Based on comprehensive technical analysis, this ${signalType.toUpperCase()} position presents a strong opportunity.
+    const reasoning = `Baseado em análise técnica abrangente, esta posição ${signalType.toUpperCase()} apresenta uma forte oportunidade.
 
-Key indicators identified:
-• ${selectedPatterns.join(', ')} pattern formation
-• Strong support at $${(entryPrice * 0.97).toFixed(2)} with high volume confirmation
-• Resistance levels clearly defined for optimal profit targets
-• Momentum indicators showing ${signalType === 'long' ? 'bullish' : 'bearish'} divergence
-• Volume profile suggests institutional accumulation
+Indicadores-chave identificados:
+• Formação de padrão ${selectedPatterns.join(', ')}
+• Suporte forte em $${(entryPrice * 0.97).toFixed(2)} com confirmação de alto volume
+• Níveis de resistência claramente definidos para alvos de lucro ideais
+• Indicadores de momentum mostrando divergência ${signalType === 'long' ? 'de alta' : 'de baixa'}
+• Perfil de volume sugere acumulação institucional
 
-Risk Management:
-This setup offers a ${riskRewardRatio.toFixed(2)}:1 risk-reward ratio with clearly defined stop-loss at $${stopLoss.toFixed(2)}. Position should be sized according to your risk tolerance, with suggested leverage of ${Math.floor(Math.random() * 5) + 5}x for optimal capital efficiency.
+Gestão de Risco:
+Esta configuração oferece uma relação risco-recompensa de ${riskRewardRatio.toFixed(2)}:1 com stop-loss claramente definido em $${stopLoss.toFixed(2)}. A posição deve ser dimensionada de acordo com sua tolerância ao risco, com alavancagem sugerida de ${Math.floor(Math.random() * 5) + 5}x para eficiência ideal de capital.
 
-Recommended approach: Enter at current levels with progressive profit-taking at each target level to lock in gains while maintaining upside exposure.`;
+Abordagem recomendada: Entre nos níveis atuais com realização progressiva de lucros em cada nível de alvo para garantir ganhos enquanto mantém exposição de alta.`;
 
     return {
       asset,
@@ -147,8 +147,8 @@ Recommended approach: Enter at current levels with progressive profit-taking at 
             <Sparkles className="w-6 h-6 text-[#FFD700]" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-white">AI Chart Analysis</h2>
-            <p className="text-sm text-gray-400">Upload a chart for instant trade signals</p>
+            <h2 className="text-xl font-bold text-white">Análise IA de Gráficos</h2>
+            <p className="text-sm text-gray-400">Faça upload de um gráfico para sinais instantâneos</p>
           </div>
         </div>
       </div>
@@ -170,8 +170,8 @@ Recommended approach: Enter at current levels with progressive profit-taking at 
           <div className="space-y-4">
             <Loader2 className="w-12 h-12 text-[#00BFFF] animate-spin mx-auto" />
             <div className="space-y-2">
-              <p className="text-white font-semibold">Analyzing chart...</p>
-              <p className="text-sm text-gray-400">AI is detecting patterns and generating signals</p>
+              <p className="text-white font-semibold">Analisando gráfico...</p>
+              <p className="text-sm text-gray-400">IA está detectando padrões e gerando sinais</p>
             </div>
             <div className="w-64 h-2 bg-[#0A0A0A] rounded-full overflow-hidden mx-auto">
               <div className="h-full bg-gradient-to-r from-[#00BFFF] to-[#FFD700] animate-pulse"></div>
@@ -184,9 +184,9 @@ Recommended approach: Enter at current levels with progressive profit-taking at 
               <div className="absolute inset-0 blur-xl bg-[#00BFFF]/30 animate-pulse"></div>
             </div>
             <div className="space-y-2">
-              <p className="text-white font-semibold">Drop your chart here or click to upload</p>
+              <p className="text-white font-semibold">Arraste seu gráfico aqui ou clique para fazer upload</p>
               <p className="text-sm text-gray-400">
-                Supports PNG, JPG, JPEG • AI will analyze patterns, support/resistance, and signals
+                Suporta PNG, JPG, JPEG • IA vai analisar padrões, suporte/resistência e sinais
               </p>
             </div>
             <label className="inline-block">
@@ -197,7 +197,7 @@ Recommended approach: Enter at current levels with progressive profit-taking at 
                 onChange={handleFileInput}
               />
               <span className="px-6 py-3 bg-gradient-to-r from-[#00BFFF] to-[#FFD700] text-black font-semibold rounded-lg cursor-pointer hover:opacity-90 transition-all inline-block">
-                Select Chart Image
+                Selecionar Imagem do Gráfico
               </span>
             </label>
           </div>
@@ -207,15 +207,15 @@ Recommended approach: Enter at current levels with progressive profit-taking at 
       <div className="mt-6 grid grid-cols-3 gap-4">
         <div className="text-center p-3 bg-[#0A0A0A] rounded-lg border border-[#00BFFF]/20">
           <div className="text-[#00BFFF] text-2xl font-bold">98.5%</div>
-          <div className="text-xs text-gray-400 mt-1">Pattern Detection</div>
+          <div className="text-xs text-gray-400 mt-1">Detecção de Padrões</div>
         </div>
         <div className="text-center p-3 bg-[#0A0A0A] rounded-lg border border-[#FFD700]/20">
           <div className="text-[#FFD700] text-2xl font-bold">&lt;2s</div>
-          <div className="text-xs text-gray-400 mt-1">Analysis Speed</div>
+          <div className="text-xs text-gray-400 mt-1">Velocidade de Análise</div>
         </div>
         <div className="text-center p-3 bg-[#0A0A0A] rounded-lg border border-[#00FF9D]/20">
           <div className="text-[#00FF9D] text-2xl font-bold">24/7</div>
-          <div className="text-xs text-gray-400 mt-1">AI Monitoring</div>
+          <div className="text-xs text-gray-400 mt-1">Monitoramento IA</div>
         </div>
       </div>
     </div>

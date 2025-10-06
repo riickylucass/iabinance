@@ -23,7 +23,7 @@ export function Auth() {
         await signUp(email, password, fullName);
       }
     } catch (err: any) {
-      setError(err.message || 'An error occurred');
+      setError(err.message || 'Ocorreu um erro');
     } finally {
       setLoading(false);
     }
@@ -43,41 +43,41 @@ export function Auth() {
             <TrendingUp className="w-10 h-10 text-[#00BFFF]" />
           </div>
           <h1 className="text-4xl font-bold bg-gradient-to-r from-[#00BFFF] via-[#FFD700] to-[#00BFFF] bg-clip-text text-transparent mb-2">
-            AI Futures Trading
+            Trading IA Futuros
           </h1>
-          <p className="text-gray-400 text-sm">Premium cryptocurrency signals powered by advanced AI</p>
+          <p className="text-gray-400 text-sm">Sinais premium de criptomoedas com inteligência artificial</p>
         </div>
 
         <div className="bg-gradient-to-b from-[#1a1a1a] to-[#0f0f0f] rounded-2xl shadow-2xl border border-[#00BFFF]/20 p-8 backdrop-blur-sm">
           <form onSubmit={handleSubmit} className="space-y-6">
             {!isLogin && (
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Full Name</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Nome Completo</label>
                 <input
                   type="text"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   className="w-full px-4 py-3 bg-[#0A0A0A] border border-[#00BFFF]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#00BFFF] focus:border-transparent transition-all"
                   required={!isLogin}
-                  placeholder="Enter your full name"
+                  placeholder="Digite seu nome completo"
                 />
               </div>
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">E-mail</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-3 bg-[#0A0A0A] border border-[#00BFFF]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#00BFFF] focus:border-transparent transition-all"
                 required
-                placeholder="your@email.com"
+                placeholder="seu@email.com"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Password</label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Senha</label>
               <input
                 type="password"
                 value={password}
@@ -100,7 +100,7 @@ export function Auth() {
               disabled={loading}
               className="w-full bg-gradient-to-r from-[#00BFFF] to-[#FFD700] text-black font-semibold py-3 rounded-lg hover:opacity-90 transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-[#00BFFF]/30 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Processing...' : (isLogin ? 'Sign In' : 'Create Account')}
+              {loading ? 'Processando...' : (isLogin ? 'Entrar' : 'Criar Conta')}
             </button>
           </form>
 
@@ -112,14 +112,14 @@ export function Auth() {
               }}
               className="text-sm text-[#00BFFF] hover:text-[#FFD700] transition-colors"
             >
-              {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
+              {isLogin ? 'Não tem uma conta? Cadastre-se' : 'Já tem uma conta? Entre'}
             </button>
           </div>
         </div>
 
         <div className="mt-6 text-center text-xs text-gray-500">
-          <p>Premium AI-powered trading signals</p>
-          <p className="mt-1">Institutional-grade analysis • Real-time insights • Risk management</p>
+          <p>Sinais de trading com inteligência artificial premium</p>
+          <p className="mt-1">Análise de nível institucional • Insights em tempo real • Gestão de risco</p>
         </div>
       </div>
     </div>

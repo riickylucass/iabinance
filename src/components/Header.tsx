@@ -1,6 +1,7 @@
-import { Bitcoin, LogOut, Settings, TrendingUp } from 'lucide-react';
+import { Bitcoin, LogOut, Settings, TrendingUp, TrendingDown } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { Profile, UserAnalytics } from '../lib/supabase';
+import { useBinancePrices } from '../hooks/useBinancePrices';
 
 type HeaderProps = {
   profile: Profile | null;
@@ -10,14 +11,25 @@ type HeaderProps = {
 
 export function Header({ profile, analytics, onOpenSettings }: HeaderProps) {
   const { signOut } = useAuth();
+  const { prices, loading: pricesLoading } = useBinancePrices();
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     }).format(value);
+  };
+
+  const formatPrice = (price: string) => {
+    const num = parseFloat(price);
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(num);
   };
 
   const getTierColor = (tier?: string) => {
@@ -39,28 +51,74 @@ export function Header({ profile, analytics, onOpenSettings }: HeaderProps) {
             </div>
             <div>
               <h1 className="text-xl font-bold bg-gradient-to-r from-[#00BFFF] to-[#FFD700] bg-clip-text text-transparent">
-                AI Futures Pro
+                IA Futuros Pro
               </h1>
-              <p className="text-xs text-gray-500">Real-time market intelligence</p>
+              <p className="text-xs text-gray-500">Inteligência de mercado em tempo real</p>
             </div>
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="px-4 py-2 rounded-lg bg-[#0A0A0A] border border-[#00FF9D]/30">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-[#00FF9D] rounded-full animate-pulse"></div>
-                <span className="text-xs text-gray-400">BTC/USDT</span>
-                <span className="text-sm font-semibold text-[#00FF9D]">$67,432.10</span>
-              </div>
-            </div>
+            {pricesLoading ? (
+              <div className="text-xs text-gray-500">Carregando preços...</div>
+            ) : (
+              <>
+                {prices.BTCUSDT && (
+                  <div className={`px-4 py-2 rounded-lg bg-[#0A0A0A] border ${
+                    parseFloat(prices.BTCUSDT.priceChangePercent) >= 0 ? 'border-[#00FF9D]/30' : 'border-[#FF3B3B]/30'
+                  }`}>
+                    <div className="flex items-center gap-2">
+                      <div className={`w-2 h-2 rounded-full animate-pulse ${
+                        parseFloat(prices.BTCUSDT.priceChangePercent) >= 0 ? 'bg-[#00FF9D]' : 'bg-[#FF3B3B]'
+                      }`}></div>
+                      <span className="text-xs text-gray-400">BTC/USDT</span>
+                      <span className={`text-sm font-semibold ${
+                        parseFloat(prices.BTCUSDT.priceChangePercent) >= 0 ? 'text-[#00FF9D]' : 'text-[#FF3B3B]'
+                      }`}>
+                        {formatPrice(prices.BTCUSDT.price)}
+                      </span>
+                      {parseFloat(prices.BTCUSDT.priceChangePercent) >= 0 ? (
+                        <TrendingUp className="w-3 h-3 text-[#00FF9D]" />
+                      ) : (
+                        <TrendingDown className="w-3 h-3 text-[#FF3B3B]" />
+                      )}
+                      <span className={`text-xs ${
+                        parseFloat(prices.BTCUSDT.priceChangePercent) >= 0 ? 'text-[#00FF9D]' : 'text-[#FF3B3B]'
+                      }`}>
+                        {parseFloat(prices.BTCUSDT.priceChangePercent) >= 0 ? '+' : ''}{prices.BTCUSDT.priceChangePercent}%
+                      </span>
+                    </div>
+                  </div>
+                )}
 
-            <div className="px-4 py-2 rounded-lg bg-[#0A0A0A] border border-[#00FF9D]/30">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-[#00FF9D] rounded-full animate-pulse"></div>
-                <span className="text-xs text-gray-400">ETH/USDT</span>
-                <span className="text-sm font-semibold text-[#00FF9D]">$3,245.67</span>
-              </div>
-            </div>
+                {prices.ETHUSDT && (
+                  <div className={`px-4 py-2 rounded-lg bg-[#0A0A0A] border ${
+                    parseFloat(prices.ETHUSDT.priceChangePercent) >= 0 ? 'border-[#00FF9D]/30' : 'border-[#FF3B3B]/30'
+                  }`}>
+                    <div className="flex items-center gap-2">
+                      <div className={`w-2 h-2 rounded-full animate-pulse ${
+                        parseFloat(prices.ETHUSDT.priceChangePercent) >= 0 ? 'bg-[#00FF9D]' : 'bg-[#FF3B3B]'
+                      }`}></div>
+                      <span className="text-xs text-gray-400">ETH/USDT</span>
+                      <span className={`text-sm font-semibold ${
+                        parseFloat(prices.ETHUSDT.priceChangePercent) >= 0 ? 'text-[#00FF9D]' : 'text-[#FF3B3B]'
+                      }`}>
+                        {formatPrice(prices.ETHUSDT.price)}
+                      </span>
+                      {parseFloat(prices.ETHUSDT.priceChangePercent) >= 0 ? (
+                        <TrendingUp className="w-3 h-3 text-[#00FF9D]" />
+                      ) : (
+                        <TrendingDown className="w-3 h-3 text-[#FF3B3B]" />
+                      )}
+                      <span className={`text-xs ${
+                        parseFloat(prices.ETHUSDT.priceChangePercent) >= 0 ? 'text-[#00FF9D]' : 'text-[#FF3B3B]'
+                      }`}>
+                        {parseFloat(prices.ETHUSDT.priceChangePercent) >= 0 ? '+' : ''}{prices.ETHUSDT.priceChangePercent}%
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </div>
 
@@ -68,7 +126,7 @@ export function Header({ profile, analytics, onOpenSettings }: HeaderProps) {
           {analytics && (
             <div className="flex items-center gap-4">
               <div className="text-right">
-                <div className="text-xs text-gray-400">Total P&L</div>
+                <div className="text-xs text-gray-400">L&P Total</div>
                 <div className={`text-lg font-bold ${analytics.total_profit_loss >= 0 ? 'text-[#00FF9D]' : 'text-[#FF3B3B]'}`}>
                   {formatCurrency(analytics.total_profit_loss)}
                 </div>
@@ -77,7 +135,7 @@ export function Header({ profile, analytics, onOpenSettings }: HeaderProps) {
               <div className="w-px h-10 bg-[#00BFFF]/20"></div>
 
               <div className="text-right">
-                <div className="text-xs text-gray-400">Win Rate</div>
+                <div className="text-xs text-gray-400">Taxa de Acerto</div>
                 <div className="text-lg font-bold text-[#FFD700]">
                   {analytics.win_rate.toFixed(1)}%
                 </div>
