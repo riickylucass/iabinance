@@ -11,6 +11,7 @@ export function ChartAnalysis({ onNewSignal }: ChartAnalysisProps) {
   const { user } = useAuth();
   const [analyzing, setAnalyzing] = useState(false);
   const [dragActive, setDragActive] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const generateMockSignal = async (): Promise<Partial<TradeSignal>> => {
     const assets = ['BTC/USDT', 'ETH/USDT', 'SOL/USDT', 'BNB/USDT'];
@@ -80,17 +81,85 @@ Abordagem recomendada: Entre nos níveis atuais com realização progressiva de 
     if (!user) return;
 
     setAnalyzing(true);
+    setError(null);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      const formData = new FormData();
+      formData.append('file', file);
 
-      const mockSignal = await generateMockSignal();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error('Sessão não encontrada');
+
+      const uploadResponse = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/upload-chart`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`,
+          },
+          body: formData
+        }
+      );
+
+      if (!uploadResponse.ok) {
+        const error = await uploadResponse.json();
+        throw new Error(error.error || 'Erro ao fazer upload');
+      }
+
+      const uploadData = await uploadResponse.json();
+      const imageUrl = uploadData.url;
+
+      const analyzeResponse = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/analyze-chart`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            imageUrl: imageUrl,
+            currentPrice: null
+          })
+        }
+      );
+
+      if (!analyzeResponse.ok) {
+        const error = await analyzeResponse.json();
+        throw new Error(error.error || 'Erro ao analisar imagem');
+      }
+
+      const analyzeData = await analyzeResponse.json();
+      const analysis = analyzeData.analysis;
+
+      const riskRewardRatio = Math.abs(
+        (analysis.takeProfit1 - analysis.entryPrice) /
+        (analysis.stopLoss - analysis.entryPrice)
+      );
+
+      const positionSize = 100 + Math.random() * 400;
 
       const { data, error } = await supabase
         .from('trade_signals')
         .insert({
           user_id: user.id,
-          ...mockSignal
+          asset: analysis.asset,
+          timeframe: analysis.timeframe,
+          signal_type: analysis.signalType,
+          entry_price: analysis.entryPrice,
+          stop_loss: analysis.stopLoss,
+          take_profit_1: analysis.takeProfit1,
+          take_profit_2: analysis.takeProfit2,
+          take_profit_3: analysis.takeProfit3,
+          take_profit_4: analysis.takeProfit4,
+          suggested_leverage: analysis.leverage,
+          confidence_score: analysis.confidenceScore,
+          risk_reward_ratio: riskRewardRatio,
+          position_size: positionSize,
+          patterns_detected: analysis.patterns,
+          ai_reasoning: analysis.analysis,
+          chart_image_url: imageUrl,
+          status: 'active'
         })
         .select()
         .single();
@@ -116,7 +185,8 @@ Abordagem recomendada: Entre nos níveis atuais com realização progressiva de 
         }
       }
     } catch (error) {
-      console.error('Error generating signal:', error);
+      console.error('Erro ao gerar sinal:', error);
+      setError('Erro ao analisar gráfico: ' + (error as Error).message);
     } finally {
       setAnalyzing(false);
     }
@@ -203,6 +273,12 @@ Abordagem recomendada: Entre nos níveis atuais com realização progressiva de 
           </div>
         )}
       </div>
+
+      {error && (
+        <div className="mt-4 p-4 bg-[#FF3B3B]/10 border border-[#FF3B3B]/30 rounded-lg">
+          <p className="text-[#FF3B3B] text-sm">{error}</p>
+        </div>
+      )}
 
       <div className="mt-6 grid grid-cols-3 gap-4">
         <div className="text-center p-3 bg-[#0A0A0A] rounded-lg border border-[#00BFFF]/20">
